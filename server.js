@@ -7,7 +7,12 @@ const multer = require("multer");
 const fs = require("fs");
 
 const app = express();
-app.use(cors());
+
+// 👉 Enable CORS for your GitHub Pages frontend
+app.use(cors({
+  origin: ["https://kiisaaa.github.io"], // replace with your GitHub Pages URL
+  methods: ["GET", "POST"]
+}));
 
 // 👉 Ensure uploads folder exists
 const uploadsDir = path.join(__dirname, "uploads");
@@ -36,16 +41,15 @@ app.post("/send-report", upload.single("image"), async (req, res) => {
   const imageFile = req.file ? req.file.path : null;
 
   let transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS
-  },
+    service: "gmail",
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASS
+    },
   });
 
-
   let mailOptions = {
-    from: "kenpascualjacob@gmail.com",
+    from: process.env.GMAIL_USER,
     to: [
       "macazo.386667@novaliches.sti.edu.ph",
       "melendez.387472@novaliches.sti.edu.ph",
@@ -70,4 +74,6 @@ app.post("/send-report", upload.single("image"), async (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log("🚀 Server running on http://localhost:3000"));
+// Use dynamic port for Render deployment
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
