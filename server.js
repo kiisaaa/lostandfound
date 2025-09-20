@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
@@ -35,12 +36,13 @@ app.post("/send-report", upload.single("image"), async (req, res) => {
   const imageFile = req.file ? req.file.path : null;
 
   let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "kenpascualjacob@gmail.com", // replace with your Gmail
-      pass: "jyus zwiw ucwn jhgc",       // your App Password
-    },
+  service: "gmail",
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS
+  },
   });
+
 
   let mailOptions = {
     from: "kenpascualjacob@gmail.com",
