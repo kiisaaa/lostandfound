@@ -100,10 +100,11 @@
       const formData = new FormData(form);
 
       try {
-        const response = await fetch('http://localhost:3000/send-report', {
-          method: 'POST',
-          body: formData
+        const response = await fetch('https://lost-and-found2-0dfg.onrender.com/send-report', {
+        method: 'POST',
+        body: formData
         });
+
 
         const result = await response.json();
         if (result.success) {
