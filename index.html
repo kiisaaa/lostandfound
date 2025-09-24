@@ -112,10 +112,11 @@
       const formData = new FormData(form);
 
       try {
-        const response = await fetch('https://lost-and-found-1-a1pu.onrender.com/send-report', {
+        const response = await fetch('/send-report', {
           method: 'POST',
           body: formData
         });
+
 
 
         const result = await response.json();

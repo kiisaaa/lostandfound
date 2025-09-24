@@ -10,9 +10,14 @@ const app = express();
 
 // 👉 Enable CORS for your GitHub Pages frontend
 app.use(cors({
-  origin: ["https://kiisaaa.github.io"], // replace with your GitHub Pages URL
+  origin: [
+    "https://kiisaaa.github.io",
+    "https://kiisaaa.github.io/lost-and-found",
+    "https://kiisaaa.github.io/lost-and-found2"
+  ],
   methods: ["GET", "POST"]
 }));
+
 
 // 👉 Ensure uploads folder exists
 const uploadsDir = path.join(__dirname, "uploads");
