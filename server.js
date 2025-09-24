@@ -1,44 +1,16 @@
-require('dotenv').config();
 const express = require("express");
 const nodemailer = require("nodemailer");
+const multer = require("multer");
 const cors = require("cors");
 const path = require("path");
-const multer = require("multer");
-const fs = require("fs");
 
 const app = express();
+app.use(cors());
 
-// 👉 Enable CORS for your GitHub Pages frontend
-app.use(cors({
-  origin: ["https://kiisaaa.github.io"], // ✅ GitHub Pages domain
-  methods: ["GET", "POST"]
-}));
+// ⚡ setup multer to handle file uploads
+const upload = multer({ dest: "uploads/" });
 
-
-
-
-// 👉 Ensure uploads folder exists
-const uploadsDir = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-  console.log("✅ Created uploads folder:", uploadsDir);
-}
-
-// 👉 Serve your index.html and related files
-app.use(express.static(path.join(__dirname)));
-
-// ⚡ Setup multer to store uploaded images
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  }
-});
-const upload = multer({ storage });
-
-// Route to handle report submission with image
+// 👉 API route muna
 app.post("/send-report", upload.single("image"), async (req, res) => {
   const { founder, place, time, description } = req.body;
   const imageFile = req.file ? req.file.path : null;
@@ -46,13 +18,13 @@ app.post("/send-report", upload.single("image"), async (req, res) => {
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_PASS
+      user: "anonymousetrialanderror@gmail.com",
+      pass: "bzmu uawr ylju htgc",
     },
   });
 
   let mailOptions = {
-    from: process.env.GMAIL_USER,
+    from: "anonymousetrialanderror@gmail.com",
     to: [
       "macazo.386667@novaliches.sti.edu.ph", 
       "acuna.385093@novaliches.sti.edu.ph", 
@@ -64,7 +36,8 @@ app.post("/send-report", upload.single("image"), async (req, res) => {
       "go.387381@novaliches.sti.edu.ph", 
       "nanquilada.388026@novaliches.sti.edu.ph", 
       "paner.391196@novaliches.sti.edu.ph", 
-      "villegas.386021@novaliches.sti.edu.ph"
+      "villegas.386021@novaliches.sti.edu.ph",
+      "kenpascualjacob@gmail.com"
     ],
     subject: "New Lost and Found Report",
     text: `
@@ -73,7 +46,7 @@ app.post("/send-report", upload.single("image"), async (req, res) => {
       Time: ${time}
       Description: ${description}
     `,
-    attachments: imageFile ? [{ path: imageFile }] : []
+    attachments: imageFile ? [{ path: imageFile }] : [],
   };
 
   try {
@@ -85,6 +58,9 @@ app.post("/send-report", upload.single("image"), async (req, res) => {
   }
 });
 
-// Use dynamic port for Render deployment
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+// 👉 static files after API route
+app.use(express.static(path.join(__dirname)));
+
+app.listen(3000, () =>
+  console.log("🚀 Server running on http://localhost:3000")
+);
