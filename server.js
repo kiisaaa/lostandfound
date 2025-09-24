@@ -3,6 +3,7 @@ const nodemailer = require("nodemailer");
 const multer = require("multer");
 const cors = require("cors");
 const path = require("path");
+require("dotenv").config(); // optional, mainly for local testing
 
 const app = express();
 app.use(cors());
@@ -10,21 +11,22 @@ app.use(cors());
 // ⚡ setup multer to handle file uploads
 const upload = multer({ dest: "uploads/" });
 
-// 👉 API route muna
+// 👉 API route
 app.post("/send-report", upload.single("image"), async (req, res) => {
   const { founder, place, time, description } = req.body;
   const imageFile = req.file ? req.file.path : null;
 
+  // Gmail credentials from environment variables
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "anonymousetrialanderror@gmail.com",
-      pass: "bzmu uawr ylju htgc",
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASS,
     },
   });
 
   let mailOptions = {
-    from: "anonymousetrialanderror@gmail.com",
+    from: process.env.GMAIL_USER,
     to: [
       "macazo.386667@novaliches.sti.edu.ph", 
       "acuna.385093@novaliches.sti.edu.ph", 
@@ -58,9 +60,10 @@ app.post("/send-report", upload.single("image"), async (req, res) => {
   }
 });
 
-// 👉 static files after API route
+// 👉 static files
 app.use(express.static(path.join(__dirname)));
 
-app.listen(3000, () =>
-  console.log("🚀 Server running on http://localhost:3000")
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () =>
+  console.log(`🚀 Server running on http://localhost:${PORT}`)
 );
