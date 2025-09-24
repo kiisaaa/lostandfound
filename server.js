@@ -10,9 +10,10 @@ const app = express();
 
 // 👉 Enable CORS for your GitHub Pages frontend
 app.use(cors({
-  origin: "https://kiisaaa.github.io",
+  origin: ["https://kiisaaa.github.io"], // ✅ GitHub Pages domain
   methods: ["GET", "POST"]
 }));
+
 
 
 
